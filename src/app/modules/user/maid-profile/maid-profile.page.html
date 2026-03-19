@@ -1,0 +1,248 @@
+    <ion-header class="profile-header">
+      <ion-toolbar class="profile-toolbar">
+        <ion-buttons slot="start">
+          <ion-back-button
+            class="back-button"
+            defaultHref="/user/home"
+          ></ion-back-button>
+        </ion-buttons>
+        <ion-title class="header-title">Service Provider</ion-title>
+        <ion-buttons slot="end">
+          <ion-button class="share-btn">
+            <span>📤</span>
+          </ion-button>
+        </ion-buttons>
+      </ion-toolbar>
+    </ion-header>
+
+    <ion-content class="profile-container" *ngIf="maid">
+      <!-- Hero Section with Background -->
+      <div class="hero-banner">
+        <div class="hero-gradient"></div>
+        <ion-avatar class="hero-avatar">
+          <img
+            [src]="
+              maid.profileImage ||
+              'https://ionicframework.com/docs/img/demos/avatar.svg'
+            "
+          />
+        </ion-avatar>
+      </div>
+
+      <!-- Profile Info Card -->
+      <ion-card class="profile-info-card">
+        <ion-card-content class="info-content">
+          <h1 class="profile-name">{{ maid.name }}</h1>
+          <p class="profile-location">
+            <span class="location-icon">📍</span>
+            {{ maid.city }}
+          </p>
+
+          <!-- Rating Section -->
+          <div class="rating-section">
+            <div class="rating-display">
+              <div class="rating-circle">
+                <span class="rating-number">{{ maid.rating || 'N/A' }}</span>
+                <span class="rating-icon">⭐</span>
+              </div>
+            </div>
+            <div class="rating-info">
+              <p class="rating-count">{{ maid.totalReviews }} reviews</p>
+              <p class="rating-text">
+                {{
+                  maid.rating >= 4.5
+                    ? 'Excellent service'
+                    : maid.rating >= 3.5
+                      ? 'Good service'
+                      : 'Getting started'
+                }}
+              </p>
+            </div>
+          </div>
+
+          <!-- Quick Stats -->
+          <div class="quick-stats">
+            <div class="stat-card experience-card">
+              <span class="stat-icon">📅</span>
+              <span class="stat-value">{{ maid.experience }}+</span>
+              <span class="stat-label">Years Experience</span>
+            </div>
+            <div class="stat-card salary-card">
+              <span class="stat-icon">💰</span>
+              <span class="stat-value">₹{{ maid.salaryExpectation }}</span>
+              <span class="stat-label">Per Day</span>
+            </div>
+            <div
+              class="stat-card availability-card"
+              [class.available]="maid.isAvailable"
+            >
+              <span class="stat-icon">✅</span>
+              <span class="stat-value">{{
+                maid.isAvailable ? 'Available' : 'Busy'
+              }}</span>
+              <span class="stat-label">Status</span>
+            </div>
+          </div>
+        </ion-card-content>
+      </ion-card>
+
+      <!-- About Section -->
+      <div class="section">
+        <h2 class="section-title">About</h2>
+        <ion-card class="content-card">
+          <ion-card-content>
+            <p class="about-text">
+              {{ maid.experience }}-year experienced professional specializing
+              in {{ maid.skills[0] }}. Dedicated to providing quality service
+              with attention to detail and reliability.
+            </p>
+
+            <div class="badges-row">
+              <ion-badge class="verified-badge" color="success">
+                <ion-icon name="checkmark-circle-outline"></ion-icon>
+                Verified Profile
+              </ion-badge>
+              <ion-badge class="badge-item" color="warning">
+                <ion-icon name="time-outline"></ion-icon>
+                Punctual
+              </ion-badge>
+            </div>
+          </ion-card-content>
+        </ion-card>
+      </div>
+
+      <!-- Skills Section -->
+      <div class="section">
+        <h2 class="section-title">Professional Skills</h2>
+        <ion-card class="content-card">
+          <ion-card-content class="skills-content">
+            <div class="skills-grid">
+              <div *ngFor="let skill of maid.skills" class="skill-item">
+                <span class="skill-emoji">{{ getSkillEmoji(skill) }}</span>
+                <span class="skill-name">{{ skill }}</span>
+              </div>
+            </div>
+          </ion-card-content>
+        </ion-card>
+      </div>
+
+      <!-- Details Section -->
+      <div class="section">
+        <h2 class="section-title">Details</h2>
+        <ion-card class="content-card">
+          <ion-card-content class="details-content">
+            <div class="detail-item">
+              <span class="detail-icon">📧</span>
+              <span class="detail-label">Email:</span>
+              <span class="detail-value">{{ maid.email }}</span>
+            </div>
+            <div class="detail-item">
+              <span class="detail-icon">📱</span>
+              <span class="detail-label">Phone:</span>
+              <span class="detail-value">{{ maid.phone }}</span>
+            </div>
+            <div class="detail-item">
+              <span class="detail-icon">📍</span>
+              <span class="detail-label">Service Area:</span>
+              <span class="detail-value">{{ maid.city }}</span>
+            </div>
+            <div class="detail-item">
+              <span class="detail-icon">📅</span>
+              <span class="detail-label">Member Since:</span>
+              <span class="detail-value">{{ formatDate(maid.createdAt) }}</span>
+            </div>
+          </ion-card-content>
+        </ion-card>
+      </div>
+
+      <!-- Premium Reviews Section -->
+      <div class="section">
+        <h2 class="section-title">Recent Reviews</h2>
+
+        <!-- Review Card 1 -->
+        <ion-card class="review-card">
+          <ion-card-content class="review-card-content">
+            <div class="review-header">
+              <div class="reviewer-info">
+                <div class="reviewer-avatar">👩‍💼</div>
+                <div class="reviewer-details">
+                  <h4 class="reviewer-name">Sarah Johnson</h4>
+                  <p class="review-date">2 weeks ago</p>
+                </div>
+              </div>
+              <div class="rating-stars">⭐⭐⭐⭐⭐</div>
+            </div>
+            <p class="review-text">
+              "Amazing service! Very professional and punctual. She cleaned
+              every corner of my house with great attention to detail."
+            </p>
+            <div class="review-footer">
+              <span class="verified-tag">✓ Verified Booking</span>
+            </div>
+          </ion-card-content>
+        </ion-card>
+
+        <!-- Review Card 2 -->
+        <ion-card class="review-card">
+          <ion-card-content class="review-card-content">
+            <div class="review-header">
+              <div class="reviewer-info">
+                <div class="reviewer-avatar">👨‍💼</div>
+                <div class="reviewer-details">
+                  <h4 class="reviewer-name">Rajesh Patel</h4>
+                  <p class="review-date">1 month ago</p>
+                </div>
+              </div>
+              <div class="rating-stars">⭐⭐⭐⭐⭐</div>
+            </div>
+            <p class="review-text">
+              "Highly recommended. Best cleaning service in town. Always arrives
+              on time and does an excellent job."
+            </p>
+            <div class="review-footer">
+              <span class="verified-tag">✓ Verified Booking</span>
+            </div>
+          </ion-card-content>
+        </ion-card>
+
+        <!-- Review Card 3 -->
+        <ion-card class="review-card">
+          <ion-card-content class="review-card-content">
+            <div class="review-header">
+              <div class="reviewer-info">
+                <div class="reviewer-avatar">👩‍🦰</div>
+                <div class="reviewer-details">
+                  <h4 class="reviewer-name">Priya Sharma</h4>
+                  <p class="review-date">3 weeks ago</p>
+                </div>
+              </div>
+              <div class="rating-stars">⭐⭐⭐⭐⭐</div>
+            </div>
+            <p class="review-text">
+              "Professional, courteous, and reliable. She takes pride in her
+              work. I've been using her service for 6 months now."
+            </p>
+            <div class="review-footer">
+              <span class="verified-tag">✓ Verified Booking</span>
+            </div>
+          </ion-card-content>
+        </ion-card>
+      </div>
+
+      <!-- CTA Section -->
+      <div class="cta-section">
+        <ion-button
+          expand="block"
+          class="book-now-btn"
+          [routerLink]="['/user/booking', maid.uid]"
+        >
+          <span class="btn-icon">📅</span>
+          Book Now
+        </ion-button>
+        <ion-button expand="block" fill="outline" class="message-btn">
+          <span class="btn-icon">💬</span>
+          Send Message
+        </ion-button>
+      </div>
+    </ion-content>
+  

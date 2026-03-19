@@ -1,0 +1,202 @@
+    <ion-header class="premium-header">
+      <ion-toolbar class="premium-toolbar">
+        <ion-title class="premium-title">GrihSakhi 🏠</ion-title>
+        <ion-buttons slot="end">
+          <ion-button class="logout-btn" (click)="logout()">
+            <ion-icon name="log-out-outline"></ion-icon>
+          </ion-button>
+        </ion-buttons>
+      </ion-toolbar>
+    </ion-header>
+
+    <ion-content class="premium-content">
+      <!-- Hero Section -->
+      <div class="hero-section">
+        <div class="hero-blur"></div>
+        <div class="hero-inner">
+          <h2 class="greeting-title">Hello, {{ userName }}! 👋</h2>
+          <p class="greeting-subtitle">Find trusted help for your home</p>
+
+          <!-- Search Bar -->
+          <div class="search-wrapper">
+            <div class="search-icon">🔍</div>
+            <ion-searchbar
+              [(ngModel)]="searchCity"
+              placeholder="Search by city..."
+              (ionInput)="applyFilters()"
+              class="premium-search"
+              debounce="300"
+            ></ion-searchbar>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== CAROUSEL SECTION ===== -->
+      <div class="carousel-outer">
+        <div class="carousel-wrapper">
+          <div
+            class="carousel-track"
+            [style.transform]="'translateX(-' + currentSlide * 100 + '%)'"
+          >
+            <div class="slide-card" *ngFor="let card of carouselCards">
+              <img
+                *ngIf="card.image"
+                [src]="card.image"
+                class="card-bg-img"
+                [alt]="card.tag"
+              />
+              <div
+                class="card-color-bg"
+                *ngIf="!card.image"
+                [style.background]="card.colorBg"
+              ></div>
+              <div class="card-overlay"></div>
+              <div class="card-content">
+                <span
+                  class="card-tag"
+                  [style.background]="card.tagBg"
+                  [style.color]="card.tagColor"
+                >
+                  {{ card.tag }}
+                </span>
+                <p class="card-title">{{ card.title }}</p>
+                <p class="card-desc">{{ card.desc }}</p>
+              </div>
+            </div>
+          </div>
+
+          <button class="nav-btn prev" (click)="prevSlide()">&#8249;</button>
+          <button class="nav-btn next" (click)="nextSlide()">&#8250;</button>
+        </div>
+
+        <!-- Dots -->
+        <div class="dots-row">
+          <span
+            *ngFor="let c of carouselCards; let i = index"
+            class="dot"
+            [class.active]="i === currentSlide"
+            (click)="goToSlide(i)"
+          >
+          </span>
+        </div>
+        <p class="slide-counter">
+          {{ currentSlide + 1 }} / {{ carouselCards.length }}
+        </p>
+      </div>
+      <!-- ===== END CAROUSEL ===== -->
+
+      <!-- Skill Filter Chips -->
+      <div class="filter-section">
+        <h3 class="filter-title">Professional Skills</h3>
+        <div class="skill-chips">
+          <ion-chip
+            *ngFor="let skill of skillFilters"
+            [color]="selectedSkill === skill ? 'primary' : 'medium'"
+            (click)="filterBySkill(skill)"
+            class="skill-chip"
+          >
+            {{ skill }}
+          </ion-chip>
+        </div>
+      </div>
+
+      <!-- Maid Listings -->
+      <div class="listings-section">
+        <div class="listings-header">
+          <h3 class="listings-title">
+            {{ filteredMaids.length }} Service Providers
+          </h3>
+          <p *ngIf="selectedSkill !== 'All'" class="listings-subtitle">
+            {{ selectedSkill }} specialists
+          </p>
+        </div>
+
+        <div class="maids-grid">
+          <ion-card
+            *ngFor="let maid of filteredMaids; let i = index"
+            [routerLink]="['/user/maid-profile', maid.uid]"
+            class="maid-card"
+            [style.animation-delay]="i * 0.08 + 's'"
+          >
+            <ion-card-content class="card-content-inner">
+              <div class="card-top">
+                <ion-avatar class="maid-avatar">
+                  <img
+                    [src]="
+                      maid.profileImage ||
+                      'https://ionicframework.com/docs/img/demos/avatar.svg'
+                    "
+                  />
+                </ion-avatar>
+                <div class="maid-info">
+                  <h4 class="maid-name">{{ maid.name }}</h4>
+                  <p class="maid-location">📍 {{ maid.city }}</p>
+                </div>
+                <div
+                  class="rating-badge"
+                  [ngClass]="{ 'high-rating': maid.rating >= 4 }"
+                >
+                  <span class="star">⭐</span>
+                  <span class="rating-value">{{
+                    maid.rating ? (maid.rating | number: '1.1-1') : 'New'
+                  }}</span>
+                </div>
+              </div>
+
+              <div class="card-middle">
+                <div class="info-row">
+                  <span class="info-item">
+                    <span class="icon">💼</span>
+                    <span>{{ maid.experience }}y exp</span>
+                  </span>
+                  <span class="price">₹{{ maid.salaryExpectation }}/day</span>
+                </div>
+                <div class="skills-container">
+                  <span
+                    *ngFor="let skill of maid.skills.slice(0, 3)"
+                    class="skill-badge"
+                  >
+                    {{ skill }}
+                  </span>
+                  <span *ngIf="maid.skills.length > 3" class="skill-badge more">
+                    +{{ maid.skills.length - 3 }}
+                  </span>
+                </div>
+              </div>
+
+              <div class="card-bottom">
+                <ion-button class="book-btn" (click)="$event.stopPropagation()">
+                  Book Now →
+                </ion-button>
+              </div>
+            </ion-card-content>
+          </ion-card>
+        </div>
+
+        <div *ngIf="filteredMaids.length === 0" class="empty-state">
+          <div class="empty-emoji">🔍</div>
+          <h3>No Providers Found</h3>
+          <p>Try a different city or skill</p>
+        </div>
+      </div>
+    </ion-content>
+
+    <!-- Tab Bar -->
+    <ion-tab-bar class="premium-tabbar" slot="bottom">
+      <ion-tab-button
+        routerLink="/user/home"
+        routerLinkActive="active"
+        [routerLinkActiveOptions]="{ exact: true }"
+      >
+        <ion-icon name="home-outline"></ion-icon>
+        <ion-label>Discover</ion-label>
+      </ion-tab-button>
+      <ion-tab-button
+        routerLink="/user/booking-history"
+        routerLinkActive="active"
+      >
+        <ion-icon name="calendar-outline"></ion-icon>
+        <ion-label>Bookings</ion-label>
+      </ion-tab-button>
+    </ion-tab-bar>
+  

@@ -1,0 +1,91 @@
+    <ion-content class="login-container">
+      <!-- Animated Background -->
+      <div class="animated-bg">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+        <div class="blob blob-3"></div>
+      </div>
+
+      <div class="content-wrapper">
+        <!-- Header Section -->
+        <div class="header-section">
+          <div class="logo-container">
+            <div class="logo-icon">🏠</div>
+          </div>
+          <h1 class="app-title">GrihSakhi</h1>
+          <p class="app-subtitle">Trusted Hands for Your Home</p>
+        </div>
+
+        <!-- Login Card -->
+        <ion-card class="login-card">
+          <ion-card-content class="card-content">
+            <h2 class="card-title">Welcome Back</h2>
+            <p class="card-subtitle">Sign in to your account</p>
+
+            <form
+              [formGroup]="loginForm"
+              (ngSubmit)="login()"
+              class="login-form"
+            >
+              <!-- Email Input -->
+              <div class="input-group">
+                <div class="input-icon">✉️</div>
+                <ion-input
+                  type="email"
+                  formControlName="email"
+                  class="input-field"
+                  placeholder="you@example.com"
+                ></ion-input>
+              </div>
+
+              <!-- Password Input with Eye Icon -->
+              <div class="input-group">
+                <div class="input-icon">🔐</div>
+                <ion-input
+                  [type]="showPassword ? 'text' : 'password'"
+                  formControlName="password"
+                  class="input-field"
+                  placeholder="••••••••"
+                ></ion-input>
+                <ion-icon
+                  [name]="showPassword ? 'eye-off-outline' : 'eye-outline'"
+                  (click)="togglePassword()"
+                  class="eye-icon"
+                ></ion-icon>
+              </div>
+
+              <!-- Submit Button -->
+              <ion-button
+                expand="block"
+                type="submit"
+                [disabled]="loginForm.invalid || isLoading"
+                class="login-btn"
+              >
+                <span *ngIf="!isLoading" class="btn-text">Sign In</span>
+                <span *ngIf="isLoading" class="btn-text loading">
+                  <span class="spinner"></span> Signing in...
+                </span>
+              </ion-button>
+            </form>
+
+            <!-- Divider -->
+            <div class="divider">
+              <span class="divider-text">New to GrihSakhi?</span>
+            </div>
+
+            <!-- Register Link -->
+            <p class="register-text">
+              <a routerLink="/auth/register" class="register-link"
+                >Create an account</a
+              >
+            </p>
+          </ion-card-content>
+        </ion-card>
+
+        <!-- Footer Info -->
+        <div class="footer-info">
+          <p class="footer-text">Secure login with Firebase</p>
+        </div>
+      </div>
+    </ion-content>
+  

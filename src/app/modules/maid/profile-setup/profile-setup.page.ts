@@ -19,68 +19,7 @@ import { AuthService } from '../../../core/services/auth.service';
     IonInput, IonButton, IonHeader, IonToolbar, IonTitle,
     IonButtons, IonBackButton
   ],
-  template: `
-    <ion-header>
-      <ion-toolbar color="primary">
-        <ion-buttons slot="start"><ion-back-button></ion-back-button></ion-buttons>
-        <ion-title style="font-family:Poppins;">Edit Profile</ion-title>
-      </ion-toolbar>
-    </ion-header>
-
-    <ion-content class="ion-padding" style="--background:#F9FAFB;">
-      <ion-card style="border-radius:16px;">
-        <ion-card-content>
-          <h3 style="font-family:Poppins;font-weight:600;color:#1E2A38;margin-bottom:16px;">
-            Update Your Profile
-          </h3>
-
-          <form [formGroup]="profileForm" (ngSubmit)="saveProfile()">
-            <ion-item style="margin-bottom:12px;">
-              <ion-label position="floating">Full Name</ion-label>
-              <ion-input formControlName="name"></ion-input>
-            </ion-item>
-
-            <ion-item style="margin-bottom:12px;">
-              <ion-label position="floating">Phone</ion-label>
-              <ion-input type="tel" formControlName="phone"></ion-input>
-            </ion-item>
-
-            <ion-item style="margin-bottom:12px;">
-              <ion-label position="floating">City</ion-label>
-              <ion-input formControlName="city"></ion-input>
-            </ion-item>
-
-            <ion-item style="margin-bottom:12px;">
-              <ion-label position="floating">Address</ion-label>
-              <ion-input formControlName="address"></ion-input>
-            </ion-item>
-
-            <ion-item style="margin-bottom:12px;">
-              <ion-label position="floating">Skills (comma separated)</ion-label>
-              <ion-input formControlName="skills" placeholder="Cooking, Cleaning, Laundry"></ion-input>
-            </ion-item>
-
-            <ion-item style="margin-bottom:12px;">
-              <ion-label position="floating">Experience (years)</ion-label>
-              <ion-input type="number" formControlName="experience"></ion-input>
-            </ion-item>
-
-            <ion-item style="margin-bottom:20px;">
-              <ion-label position="floating">Expected Salary/Day (₹)</ion-label>
-              <ion-input type="number" formControlName="salaryExpectation"></ion-input>
-            </ion-item>
-
-            <ion-button expand="block" type="submit"
-              [disabled]="profileForm.invalid || isLoading"
-              style="--background:#E91E63;--border-radius:12px;height:50px;">
-              {{ isLoading ? 'Saving...' : 'Save Profile' }}
-            </ion-button>
-          </form>
-        </ion-card-content>
-      </ion-card>
-    </ion-content>
-  `
-})
+  templateUrl: './profile-setup.page.html',})
 export class ProfileSetupPage implements OnInit {
   profileForm: FormGroup;
   isLoading = false;

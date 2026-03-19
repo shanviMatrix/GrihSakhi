@@ -1,0 +1,178 @@
+    <!-- Premium Header -->
+    <ion-header class="premium-header">
+      <ion-toolbar class="premium-toolbar">
+        <ion-buttons slot="start">
+          <ion-back-button
+            defaultHref="/user/home"
+            class="back-btn"
+          ></ion-back-button>
+        </ion-buttons>
+        <ion-title class="header-title">Book Service</ion-title>
+        <div slot="end" style="width: 48px;"></div>
+      </ion-toolbar>
+    </ion-header>
+
+    <ion-content class="premium-content">
+      <!-- Maid Profile Card -->
+      <div class="profile-section" *ngIf="maid">
+        <ion-card class="maid-profile-card">
+          <ion-card-content class="profile-content">
+            <div class="profile-header">
+              <ion-avatar class="profile-avatar">
+                <img
+                  [src]="
+                    maid.profileImage ||
+                    'https://ionicframework.com/docs/img/demos/avatar.svg'
+                  "
+                />
+              </ion-avatar>
+              <div class="profile-info">
+                <h3 class="profile-name">{{ maid.name }}</h3>
+                <p class="profile-salary">₹{{ maid.salaryExpectation }}/day</p>
+              </div>
+              <div class="profile-badge">
+                <span class="badge-star">⭐</span>
+                <span class="badge-text">{{ maid.rating || 'New' }}</span>
+              </div>
+            </div>
+            <div class="profile-skills">
+              <span
+                *ngFor="let skill of maid.skills.slice(0, 3)"
+                class="skill-tag"
+              >
+                {{ skill }}
+              </span>
+            </div>
+          </ion-card-content>
+        </ion-card>
+      </div>
+
+      <!-- Booking Form -->
+      <div class="form-section">
+        <form [formGroup]="bookingForm" (ngSubmit)="submitBooking()">
+          <!-- Service Selection -->
+          <div class="form-group">
+            <label class="form-label">
+              <span class="label-icon">🧹</span>
+              Service Required
+            </label>
+            <ion-select
+              formControlName="service"
+              placeholder="Select service"
+              class="premium-select"
+              interface="popover"
+            >
+              <ion-select-option
+                *ngFor="let skill of maid?.skills"
+                [value]="skill"
+              >
+                {{ skill }}
+              </ion-select-option>
+            </ion-select>
+          </div>
+
+          <!-- Date Selection -->
+          <div class="form-group">
+            <label class="form-label">
+              <span class="label-icon">📅</span>
+              Select Date
+            </label>
+            <div class="input-wrapper">
+              <ion-icon name="calendar-outline" class="input-icon"></ion-icon>
+              <ion-input
+                type="text"
+                formControlName="date"
+                placeholder="DD-MM-YYYY"
+                class="premium-input"
+              ></ion-input>
+            </div>
+          </div>
+
+          <!-- Time Slot Selection -->
+          <div class="form-group">
+            <label class="form-label">
+              <span class="label-icon">⏰</span>
+              Time Slot
+            </label>
+            <ion-select
+              formControlName="timeSlot"
+              placeholder="Select time slot"
+              class="premium-select"
+              interface="popover"
+            >
+              <ion-select-option value="Morning (8AM-12PM)"
+                >Morning (8AM-12PM)</ion-select-option
+              >
+              <ion-select-option value="Afternoon (12PM-4PM)"
+                >Afternoon (12PM-4PM)</ion-select-option
+              >
+              <ion-select-option value="Evening (4PM-8PM)"
+                >Evening (4PM-8PM)</ion-select-option
+              >
+              <ion-select-option value="Full Day">Full Day</ion-select-option>
+            </ion-select>
+          </div>
+
+          <!-- Address Selection -->
+          <div class="form-group">
+            <label class="form-label">
+              <span class="label-icon">📍</span>
+              Your Address
+            </label>
+            <div class="input-wrapper">
+              <ion-icon name="location-outline" class="input-icon"></ion-icon>
+              <ion-input
+                type="text"
+                formControlName="address"
+                placeholder="Enter your address"
+                class="premium-input"
+              ></ion-input>
+            </div>
+          </div>
+
+          <!-- Price Summary Card -->
+          <ion-card class="price-card">
+            <ion-card-content class="price-content">
+              <div class="price-row">
+                <span class="price-label">Service Rate</span>
+                <span class="price-value"
+                  >₹{{ maid?.salaryExpectation || 0 }}</span
+                >
+              </div>
+              <div class="price-divider"></div>
+              <div class="price-row total">
+                <span class="total-label">Total Amount</span>
+                <span class="total-value"
+                  >₹{{ maid?.salaryExpectation || 0 }}</span
+                >
+              </div>
+              <p class="price-note">
+                💳 Payment after maid accepts your request
+              </p>
+            </ion-card-content>
+          </ion-card>
+
+          <!-- Submit Button -->
+          <ion-button
+            expand="block"
+            type="submit"
+            [disabled]="bookingForm.invalid || isLoading"
+            class="submit-btn"
+          >
+            <span *ngIf="!isLoading" class="btn-text">
+              📨 Send Booking Request
+            </span>
+            <span *ngIf="isLoading" class="btn-text loading">
+              <span class="spinner"></span> Sending...
+            </span>
+          </ion-button>
+
+          <!-- Info Text -->
+          <p class="info-text">
+            By booking, you agree to our terms and conditions. The maid will
+            review your request.
+          </p>
+        </form>
+      </div>
+    </ion-content>
+  

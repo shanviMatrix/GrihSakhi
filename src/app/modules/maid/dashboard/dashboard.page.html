@@ -1,0 +1,92 @@
+    <ion-header>
+      <ion-toolbar color="primary">
+        <ion-title style="font-family:Poppins;">My Dashboard 🧹</ion-title>
+        <ion-buttons slot="end">
+          <ion-button (click)="logout()">
+            <ion-icon name="log-out-outline"></ion-icon>
+          </ion-button>
+        </ion-buttons>
+      </ion-toolbar>
+    </ion-header>
+
+    <ion-content style="--background:#F9FAFB;">
+
+      <!-- Profile Card -->
+      <ion-card style="border-radius:16px;margin:16px;">
+        <ion-card-content>
+          <div style="display:flex;justify-content:space-between;align-items:center;">
+            <div>
+              <h3 style="font-family:Poppins;font-weight:700;color:#1E2A38;margin:0 0 6px;">
+                {{ maidProfile?.name }}
+              </h3>
+              <ion-badge [color]="maidProfile?.isApproved === 'approved' ? 'success' : maidProfile?.isApproved === 'rejected' ? 'danger' : 'warning'">
+                {{ maidProfile?.isApproved | uppercase }}
+              </ion-badge>
+            </div>
+            <div style="text-align:right;">
+              <p style="margin:0;font-size:12px;color:#666;">Available</p>
+              <ion-toggle
+                [(ngModel)]="isAvailable"
+                (ionChange)="toggleAvailability()"
+                color="primary">
+              </ion-toggle>
+            </div>
+          </div>
+        </ion-card-content>
+      </ion-card>
+
+      <!-- Bookings -->
+      <div style="padding:0 16px 16px;">
+        <h3 style="font-family:Poppins;font-weight:600;color:#1E2A38;margin-bottom:12px;">
+          Booking Requests
+        </h3>
+
+        <ion-card *ngFor="let booking of bookings" style="border-radius:16px;margin-bottom:12px;">
+          <ion-card-content>
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px;">
+              <div>
+                <h4 style="font-family:Poppins;font-weight:600;color:#1E2A38;margin:0;">{{ booking.userName }}</h4>
+                <p style="color:#666;font-size:13px;margin:2px 0;">{{ booking.service }} • {{ booking.timeSlot }}</p>
+                <p style="color:#666;font-size:12px;margin:2px 0;">📅 {{ booking.date }}</p>
+                <p style="color:#666;font-size:12px;margin:0;">📍 {{ booking.address }}</p>
+              </div>
+              <div style="text-align:right;">
+                <ion-badge [color]="getStatusColor(booking.status)">
+                  {{ booking.status | uppercase }}
+                </ion-badge>
+                <p style="font-family:Poppins;font-weight:700;color:#E91E63;margin:6px 0 0;">
+                  ₹{{ booking.amount }}
+                </p>
+              </div>
+            </div>
+
+            <!-- Accept / Reject -->
+            <div *ngIf="booking.status === 'pending'" style="display:flex;gap:8px;">
+              <ion-button expand="block" color="success"
+                (click)="acceptBooking(booking)"
+                style="flex:1;--border-radius:10px;">
+                ✅ Accept
+              </ion-button>
+              <ion-button expand="block" color="danger"
+                (click)="rejectBooking(booking)"
+                style="flex:1;--border-radius:10px;">
+                ❌ Reject
+              </ion-button>
+            </div>
+
+            <!-- Mark Complete -->
+            <ion-button *ngIf="booking.status === 'paid'" expand="block"
+              (click)="markComplete(booking)"
+              style="margin-top:8px;--background:#1E2A38;--border-radius:10px;">
+              ✔️ Mark as Complete
+            </ion-button>
+          </ion-card-content>
+        </ion-card>
+
+        <p *ngIf="bookings.length === 0"
+          style="text-align:center;padding:40px;color:#999;">
+          No bookings yet.
+        </p>
+      </div>
+    </ion-content>
+  
