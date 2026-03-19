@@ -21,7 +21,11 @@ import {
   IonTitle,
   IonButtons,
   IonBackButton,
+  IonIcon,
+  ToastController,
 } from '@ionic/angular/standalone';
+import { addIcons } from 'ionicons';
+import { eyeOutline, eyeOffOutline } from 'ionicons/icons';
 import { AuthService } from '../../../core/services/auth.service';
 
 @Component({
@@ -44,6 +48,7 @@ import { AuthService } from '../../../core/services/auth.service';
     IonTitle,
     IonButtons,
     IonBackButton,
+    IonIcon,
   ],
   template: `
     <ion-header class="modern-header">
@@ -200,19 +205,24 @@ import { AuthService } from '../../../core/services/auth.service';
               </div>
             </ng-container>
 
-            <!-- Password Section -->
+            <!-- Password Section with Eye Icon -->
             <div class="form-section">
               <h3 class="section-title">Security</h3>
 
               <div class="input-group">
                 <div class="input-icon">🔐</div>
                 <ion-input
-                  type="password"
+                  [type]="showPassword ? 'text' : 'password'"
                   formControlName="password"
                   class="input-field"
                   placeholder="Password"
                 >
                 </ion-input>
+                <ion-icon
+                  [name]="showPassword ? 'eye-off-outline' : 'eye-outline'"
+                  (click)="togglePassword()"
+                  class="eye-icon"
+                ></ion-icon>
               </div>
 
               <div class="password-info">
@@ -480,6 +490,19 @@ import { AuthService } from '../../../core/services/auth.service';
         font-size: 15px;
       }
 
+      .eye-icon {
+        font-size: 20px;
+        color: rgba(255, 255, 255, 0.6);
+        cursor: pointer;
+        transition: all 0.3s ease;
+        flex-shrink: 0;
+      }
+
+      .eye-icon:hover {
+        color: #ec4899;
+        transform: scale(1.1);
+      }
+
       .info-box {
         display: flex;
         align-items: flex-start;
@@ -632,13 +655,16 @@ import { AuthService } from '../../../core/services/auth.service';
 export class RegisterPage {
   selectedRole: 'user' | 'maid' = 'user';
   isLoading = false;
+  showPassword = false;
   registerForm: FormGroup;
 
   constructor(
     private fb: FormBuilder,
     private authService: AuthService,
     private router: Router,
+    private toastCtrl: ToastController,
   ) {
+    addIcons({ eyeOutline, eyeOffOutline });
     this.registerForm = this.fb.group({
       name: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
@@ -650,6 +676,10 @@ export class RegisterPage {
       salaryExpectation: [0],
       password: ['', [Validators.required, Validators.minLength(6)]],
     });
+  }
+
+  togglePassword() {
+    this.showPassword = !this.showPassword;
   }
 
   async register() {
@@ -664,10 +694,21 @@ export class RegisterPage {
           ...v,
           skills: v.skills.split(',').map((s: string) => s.trim()),
         });
+        const toast = await this.toastCtrl.create({
+          message: '✅ Registration submitted! Awaiting admin approval.',
+          duration: 3000,
+          color: 'success',
+        });
+        toast.present();
         this.router.navigate(['/auth/login']);
       }
     } catch (err: any) {
-      console.error('Register error:', err.message);
+      const toast = await this.toastCtrl.create({
+        message: err.message || 'Registration failed.',
+        duration: 3000,
+        color: 'danger',
+      });
+      toast.present();
     } finally {
       this.isLoading = false;
     }

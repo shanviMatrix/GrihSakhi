@@ -13,7 +13,11 @@ import {
   IonCardContent,
   IonInput,
   IonButton,
+  IonIcon,
+  ToastController,
 } from '@ionic/angular/standalone';
+import { addIcons } from 'ionicons';
+import { eyeOutline, eyeOffOutline } from 'ionicons/icons';
 import { AuthService } from '../../../core/services/auth.service';
 
 @Component({
@@ -28,6 +32,7 @@ import { AuthService } from '../../../core/services/auth.service';
     IonCardContent,
     IonInput,
     IonButton,
+    IonIcon,
   ],
   template: `
     <ion-content class="login-container">
@@ -70,15 +75,20 @@ import { AuthService } from '../../../core/services/auth.service';
                 ></ion-input>
               </div>
 
-              <!-- Password Input -->
+              <!-- Password Input with Eye Icon -->
               <div class="input-group">
                 <div class="input-icon">🔐</div>
                 <ion-input
-                  type="password"
+                  [type]="showPassword ? 'text' : 'password'"
                   formControlName="password"
                   class="input-field"
                   placeholder="••••••••"
                 ></ion-input>
+                <ion-icon
+                  [name]="showPassword ? 'eye-off-outline' : 'eye-outline'"
+                  (click)="togglePassword()"
+                  class="eye-icon"
+                ></ion-icon>
               </div>
 
               <!-- Submit Button -->
@@ -330,6 +340,19 @@ import { AuthService } from '../../../core/services/auth.service';
         font-size: 16px;
       }
 
+      .eye-icon {
+        font-size: 20px;
+        color: rgba(255, 255, 255, 0.6);
+        cursor: pointer;
+        transition: all 0.3s ease;
+        flex-shrink: 0;
+      }
+
+      .eye-icon:hover {
+        color: #ec4899;
+        transform: scale(1.1);
+      }
+
       .login-btn {
         --background: linear-gradient(135deg, #ec4899, #f43f5e);
         --border-radius: 12px;
@@ -461,15 +484,22 @@ import { AuthService } from '../../../core/services/auth.service';
 export class LoginPage {
   loginForm: FormGroup;
   isLoading = false;
+  showPassword = false;
 
   constructor(
     private fb: FormBuilder,
     private authService: AuthService,
+    private toastCtrl: ToastController,
   ) {
+    addIcons({ eyeOutline, eyeOffOutline });
     this.loginForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(6)]],
     });
+  }
+
+  togglePassword() {
+    this.showPassword = !this.showPassword;
   }
 
   async login() {
@@ -479,7 +509,12 @@ export class LoginPage {
       const { email, password } = this.loginForm.value;
       await this.authService.login(email, password);
     } catch (err: any) {
-      console.error('Login error:', err.message);
+      const toast = await this.toastCtrl.create({
+        message: err.message || 'Login failed!',
+        duration: 3000,
+        color: 'danger',
+      });
+      toast.present();
     } finally {
       this.isLoading = false;
     }
