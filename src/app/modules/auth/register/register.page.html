@@ -1,0 +1,211 @@
+    <ion-header class="modern-header">
+      <ion-toolbar class="modern-toolbar">
+        <ion-buttons slot="start">
+          <ion-back-button
+            class="back-button"
+            defaultHref="/auth/login"
+          ></ion-back-button>
+        </ion-buttons>
+        <ion-title class="header-title">Create Account</ion-title>
+      </ion-toolbar>
+    </ion-header>
+
+    <ion-content class="register-container">
+      <!-- Progress Indicator -->
+      <div class="progress-container">
+        <div
+          class="progress-bar"
+          [style.width.%]="selectedRole === 'user' ? 50 : 100"
+        ></div>
+      </div>
+
+      <!-- Role Selector Card -->
+      <div class="role-selector-wrapper">
+        <div class="role-info">
+          <h2 class="role-title">Who are you?</h2>
+          <p class="role-subtitle">Choose your account type to get started</p>
+        </div>
+
+        <ion-segment [(ngModel)]="selectedRole" class="modern-segment">
+          <ion-segment-button value="user" class="segment-btn">
+            <span class="role-emoji">👤</span>
+            <span class="role-label">Homeowner</span>
+          </ion-segment-button>
+          <ion-segment-button value="maid" class="segment-btn">
+            <span class="role-emoji">🧹</span>
+            <span class="role-label">Service Provider</span>
+          </ion-segment-button>
+        </ion-segment>
+      </div>
+
+      <!-- Registration Form Card -->
+      <ion-card class="register-card">
+        <ion-card-content class="card-content">
+          <form
+            [formGroup]="registerForm"
+            (ngSubmit)="register()"
+            class="register-form"
+          >
+            <!-- Common Fields -->
+            <div class="form-section">
+              <h3 class="section-title">Personal Information</h3>
+
+              <div class="input-group">
+                <div class="input-icon">👤</div>
+                <ion-input
+                  formControlName="name"
+                  class="input-field"
+                  placeholder="Full Name"
+                >
+                </ion-input>
+              </div>
+
+              <div class="input-group">
+                <div class="input-icon">✉️</div>
+                <ion-input
+                  type="email"
+                  formControlName="email"
+                  class="input-field"
+                  placeholder="Email Address"
+                >
+                </ion-input>
+              </div>
+
+              <div class="input-group">
+                <div class="input-icon">📱</div>
+                <ion-input
+                  type="tel"
+                  formControlName="phone"
+                  class="input-field"
+                  placeholder="Phone Number"
+                >
+                </ion-input>
+              </div>
+
+              <div class="input-group">
+                <div class="input-icon">📍</div>
+                <ion-input
+                  formControlName="city"
+                  class="input-field"
+                  placeholder="City"
+                >
+                </ion-input>
+              </div>
+            </div>
+
+            <!-- Maid-Specific Fields -->
+            <ng-container *ngIf="selectedRole === 'maid'">
+              <div class="form-section maid-section">
+                <h3 class="section-title">Professional Details</h3>
+
+                <div class="input-group">
+                  <div class="input-icon">🏠</div>
+                  <ion-input
+                    formControlName="address"
+                    class="input-field"
+                    placeholder="Home Address"
+                  >
+                  </ion-input>
+                </div>
+
+                <div class="input-group">
+                  <div class="input-icon">🎯</div>
+                  <ion-input
+                    formControlName="skills"
+                    class="input-field"
+                    placeholder="Skills (e.g., Cooking, Cleaning)"
+                  >
+                  </ion-input>
+                </div>
+
+                <div class="input-row">
+                  <div class="input-group flex-half">
+                    <div class="input-icon">📅</div>
+                    <ion-input
+                      type="number"
+                      formControlName="experience"
+                      class="input-field"
+                      placeholder="Experience (years)"
+                    >
+                    </ion-input>
+                  </div>
+
+                  <div class="input-group flex-half">
+                    <div class="input-icon">💰</div>
+                    <ion-input
+                      type="number"
+                      formControlName="salaryExpectation"
+                      class="input-field"
+                      placeholder="Salary/Day (₹)"
+                    >
+                    </ion-input>
+                  </div>
+                </div>
+
+                <div class="info-box">
+                  <span class="info-icon">ℹ️</span>
+                  <p class="info-text">
+                    Your profile will be reviewed by our admin team before
+                    approval
+                  </p>
+                </div>
+              </div>
+            </ng-container>
+
+            <!-- Password Section with Eye Icon -->
+            <div class="form-section">
+              <h3 class="section-title">Security</h3>
+
+              <div class="input-group">
+                <div class="input-icon">🔐</div>
+                <ion-input
+                  [type]="showPassword ? 'text' : 'password'"
+                  formControlName="password"
+                  class="input-field"
+                  placeholder="Password"
+                >
+                </ion-input>
+                <ion-icon
+                  [name]="showPassword ? 'eye-off-outline' : 'eye-outline'"
+                  (click)="togglePassword()"
+                  class="eye-icon"
+                ></ion-icon>
+              </div>
+
+              <div class="password-info">
+                <p class="password-hint">Minimum 6 characters</p>
+              </div>
+            </div>
+
+            <!-- Submit Button -->
+            <ion-button
+              expand="block"
+              type="submit"
+              [disabled]="registerForm.invalid || isLoading"
+              class="register-btn"
+            >
+              <span *ngIf="!isLoading" class="btn-text">Create Account</span>
+              <span *ngIf="isLoading" class="btn-text loading">
+                <span class="spinner"></span> Creating...
+              </span>
+            </ion-button>
+
+            <!-- Terms -->
+            <p class="terms-text">
+              By creating an account, you agree to our
+              <a href="#" class="terms-link">Terms of Service</a> and
+              <a href="#" class="terms-link">Privacy Policy</a>
+            </p>
+          </form>
+        </ion-card-content>
+      </ion-card>
+
+      <!-- Login Link -->
+      <div class="login-footer">
+        <p class="login-text">
+          Already have an account?
+          <a routerLink="/auth/login" class="login-link">Sign In</a>
+        </p>
+      </div>
+    </ion-content>
+  

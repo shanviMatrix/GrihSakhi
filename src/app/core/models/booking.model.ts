@@ -10,7 +10,5 @@ export interface BookingModel {
   address: string;
   amount: number;
   status: 'pending' | 'accepted' | 'rejected' | 'paid' | 'completed' | 'cancelled';
-  razorpayOrderId?: string;
-  razorpayPaymentId?: string;
   createdAt: Date;
 }

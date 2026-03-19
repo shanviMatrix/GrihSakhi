@@ -1,0 +1,88 @@
+    <ion-header>
+      <ion-toolbar
+        style="--background:linear-gradient(135deg,#E91E63,#1E2A38);"
+      >
+        <ion-buttons slot="start">
+          <ion-back-button
+            defaultHref="/admin/dashboard"
+            style="color:white;"
+          ></ion-back-button>
+        </ion-buttons>
+        <ion-title style="font-family:Poppins;color:white;"
+          >All Bookings</ion-title
+        >
+      </ion-toolbar>
+    </ion-header>
+
+    <ion-content style="--background:#F9FAFB;">
+      <ion-segment
+        [(ngModel)]="activeTab"
+        mode="md"
+        style="margin:16px;--background:#F9FAFB;"
+        color="primary"
+      >
+        <ion-segment-button value="all">
+          <ion-label style="font-family:Poppins;">All</ion-label>
+        </ion-segment-button>
+        <ion-segment-button value="pending">
+          <ion-label style="font-family:Poppins;">Pending</ion-label>
+        </ion-segment-button>
+        <ion-segment-button value="paid">
+          <ion-label style="font-family:Poppins;">Paid</ion-label>
+        </ion-segment-button>
+        <ion-segment-button value="completed">
+          <ion-label style="font-family:Poppins;">Done</ion-label>
+        </ion-segment-button>
+      </ion-segment>
+
+      <div style="padding:0 16px 16px;">
+        <ion-card
+          *ngFor="let booking of getFilteredBookings()"
+          style="border-radius:16px;margin-bottom:12px;box-shadow:0 2px 8px rgba(0,0,0,0.1);"
+        >
+          <ion-card-content style="padding:16px;">
+            <div
+              style="display:flex;justify-content:space-between;align-items:flex-start;"
+            >
+              <div style="flex:1;">
+                <h4
+                  style="font-family:Poppins;font-weight:600;color:#1E2A38;margin:0 0 4px;font-size:16px;"
+                >
+                  {{ booking.userName }}
+                </h4>
+                <p style="color:#666;font-size:12px;margin:0;">
+                  🧹 {{ booking.maidName }}
+                </p>
+                <p style="color:#666;font-size:12px;margin:2px 0;">
+                  {{ booking.service }} • {{ booking.timeSlot }}
+                </p>
+                <p style="color:#666;font-size:12px;margin:0;">
+                  📅 {{ booking.date }}
+                </p>
+              </div>
+              <div style="text-align:right;">
+                <ion-badge
+                  [color]="getStatusColor(booking.status)"
+                  style="padding:6px 12px;border-radius:12px;margin-bottom:6px;"
+                >
+                  {{ booking.status | uppercase }}
+                </ion-badge>
+                <p
+                  style="font-family:Poppins;font-weight:700;color:#E91E63;margin:0;font-size:16px;"
+                >
+                  ₹{{ booking.amount }}
+                </p>
+              </div>
+            </div>
+          </ion-card-content>
+        </ion-card>
+
+        <p
+          *ngIf="getFilteredBookings().length === 0"
+          style="text-align:center;padding:60px 20px;color:#999;font-family:Poppins;"
+        >
+          No bookings found.
+        </p>
+      </div>
+    </ion-content>
+  
